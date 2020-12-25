@@ -1,0 +1,123 @@
+.Modal {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  position: absolute;
+  top: 0;
+  z-index: 210;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.container-modal {
+  background: rgba(47, 45, 47, 0.8);
+  backdrop-filter: blur(30px);
+  text-align: center;
+  color: white;
+  width: 70vw;
+  border-radius: 15px;
+}
+
+.container-modal h1 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 1.5rem;
+  margin-bottom: 0.3rem;
+  margin-left: 1.5em;
+  margin-right: 1.5rem;
+}
+
+.container-modal p {
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+  margin-bottom: 1.2rem;
+  line-height: 18px;
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+
+.buttons-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.buttons-modal button {
+  border: none;
+  outline: none;
+  background: none;
+  -webkit-appearance: none;
+  font-size: 1.1rem;
+  width: 100%;
+  text-transform: capitalize;
+  font-weight: 500;
+  color: #007aff;
+  padding: 0.85rem;
+  border-top: 0.7px solid #666;
+}
+
+.buttons-modal button:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.visible-modal-container {
+  animation: scale-in-center 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes scale-in-center {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.hidden-animation-modal-container {
+  animation: scale-out-center 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes scale-out-center {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 1;
+  }
+}
+
+.visible-modal {
+  animation: fade-in 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.hidden-animation-modal {
+  animation: fade-out 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+    z-index: 210;
+  }
+  100% {
+    opacity: 0;
+    z-index: -1;
+  }
+}

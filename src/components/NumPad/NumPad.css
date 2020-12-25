@@ -1,0 +1,110 @@
+.NumPad {
+  position: absolute;
+  top: 0;
+  z-index: 200;
+  height: 100vh;
+  width: 100vw;
+  background: #000000;
+}
+
+.visible-numpad {
+  animation: slide-in-bottom 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes slide-in-bottom {
+  0% {
+    transform: translateY(1000px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.hidden-animation-numpad {
+  animation: slide-out-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes slide-out-bottom {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(1000px);
+  }
+}
+
+.container-numpad {
+  height: 98vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.amount-numpad {
+  font-family: "Exo 2", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 40vh;
+  width: 100vw;
+}
+
+.amount-numpad h1 {
+  font-size: 3.5rem;
+  font-weight: 300;
+  vertical-align: middle;
+  color: white;
+}
+
+.numbers-numpad {
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 85vw;
+}
+
+.row-numpad {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.row-numpad button {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  text-align: center;
+  outline: none;
+  text-transform: capitalize;
+  background: #333;
+  border: none;
+  border-radius: 50%;
+  height: 5.5rem;
+  width: 5.5rem;
+  margin: 1px;
+  padding: 0.3rem;
+  font-weight: 500;
+  font-size: 2.3rem;
+  color: #fff;
+  -webkit-appearance: none;
+  transition: 0.1s background;
+}
+
+.sign-numpad {
+  font-size: 2rem;
+}
+
+.material-icons {
+  vertical-align: middle;
+  font-size: 2.4rem;
+  font-weight: 100;
+  pointer-events: none;
+}
+
+.row-numpad button:active {
+  background: rgba(255, 255, 255, 0.5);
+}
