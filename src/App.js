@@ -4,165 +4,134 @@ import NumPad from "./components/NumPad/NumPad";
 import Modal from "./components/Modal/Modal";
 import Total from "./components/Balance/Balance";
 
-const dt = new Date();
 let pressTimer;
 let dontShow = false;
-const modalStates = {
+
+const submitTypes = {
   ADD: 0,
   OUT: 1,
 };
 
 class App extends React.Component {
   state = {
-    balance: localStorage.getItem("balance") || 0,
-    dayBalance: localStorage.getItem("dayBalance") || 0,
-    daily: localStorage.getItem("daily") || 0,
-    previousDay: localStorage.getItem("previousDay"),
-    actualBalance: localStorage.getItem("actualBalance") || 0,
-    numPadVisible: null,
-    typeSubmit: 0,
+    totalBalance: localStorage.getItem("totalBalance") ? parseFloat(localStorage.getItem("totalBalance")) : 0,
+    todayBalance: localStorage.getItem("todayBalance") ? parseFloat(localStorage.getItem("todayBalance")) : 0,
+    dailyAmount: localStorage.getItem("dailyAmount") ? parseFloat(localStorage.getItem("dailyAmount")) : 0,
+    lastUpdateDate: localStorage.getItem("lastUpdateDate") ? new Date(localStorage.getItem("lastUpdateDate")) : null,
 
-    modalState: modalStates.ADD,
+    submitType: submitTypes.ADD,
+
+    numPadVisible: null,
+
     modalVisible: null,
     modalHeader: "Header",
-    modalText:
-      "This is some dummy text for modal window. If you see this probably something went wrong.",
+    modalText: "This is some dummy text for modal window. If you see this probably something went wrong.",
     modalCancellable: true,
-    modalNoable: true,
-    modalYesText: "Yes",
-    modalNoText: "No",
-
-    amountDays: 5,
+    modalHasSecond: true,
+    modalFirstText: "Yes",
+    modalSecondText: "No",
   };
-
-  UNSAFE_componentWillMount() {
-    if (localStorage.getItem("previousDay") === null) {
-      this.setState({ previousDay: dt.getDay() });
-      localStorage.setItem("previousDay", dt.getDay());
-    }
-  }
 
   componentDidMount() {
-    let dayBalance = this.state.dayBalance;
-    let balance = 0;
-    if (dt.getDay() !== parseInt(this.state.previousDay)) {
-      if (parseFloat(this.state.daily) <= parseFloat(this.state.balance)) {
-        dayBalance =
-          parseFloat(this.state.dayBalance) + parseFloat(this.state.daily);
-        dayBalance = this.roundToTwo(dayBalance);
-        localStorage.setItem("dayBalance", dayBalance);
+    if (this.state.lastUpdateDate !== null) {
+      let today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-        balance = parseFloat(this.state.balance) - parseFloat(this.state.daily);
-        balance = this.roundToTwo(balance);
-        localStorage.setItem("balance", balance);
-      } else {
-        dayBalance =
-          parseFloat(this.state.dayBalance) + parseFloat(this.state.balance);
-        dayBalance = this.roundToTwo(dayBalance);
-        localStorage.setItem("dayBalance", dayBalance);
-        localStorage.setItem("balance", 0);
+      let diff = today - this.state.lastUpdateDate;
+      diff /= 1000 * 60 * 60 * 24;
+      
+      if (diff > 0) {
+        let todayBalance = this.state.todayBalance + diff * this.state.dailyAmount;
+        if (todayBalance > this.state.totalBalance) {
+          todayBalance = this.state.totalBalance;
+        }
+
+        this.setState({todayBalance, lastUpdateDate: today});
+        localStorage.setItem("todayBalance", todayBalance);
+        localStorage.setItem("lastUpdateDate", today);
       }
-
-      localStorage.setItem("previousDay", dt.getDay());
-      this.setState({ dayBalance, balance, previousDay: dt.getDay() });
     }
   }
 
-  roundToTwo = (num) => {
-    return Math.round((num * Math.pow(10, 2)) / Math.pow(10, 2));
-  };
-
-  closeNumPad = () => {
-    this.setState({ numPadVisible: false });
-  };
-
   daysInMonth = () => {
-    return new Date(dt.getFullYear(), dt.getMonth() + 1, 0).getDate();
+    let date = new Date();
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   };
 
-  addMoney = (amount) => {
-    let previous = parseFloat(this.state.dayBalance);
-    let balance =
-      parseFloat(amount) + parseFloat(this.state.balance) + previous;
-    let daily = balance / this.daysInMonth();
-    balance -= daily;
-    let dayBalance = daily;
-    let actualBalance = balance + dayBalance;
-    dayBalance = this.roundToTwo(dayBalance);
-    balance = this.roundToTwo(balance);
-    daily = this.roundToTwo(daily);
-    actualBalance = this.roundToTwo(actualBalance);
-    this.setState({ balance, daily, dayBalance, actualBalance });
-    localStorage.setItem("balance", balance);
-    localStorage.setItem("dayBalance", dayBalance);
-    localStorage.setItem("daily", daily);
-    localStorage.setItem("actualBalance", actualBalance);
+  updateBalance = (amount) => {
+    let totalBalance = parseFloat(amount);
+    let dailyAmount = totalBalance / this.daysInMonth();
+    let todayBalance = dailyAmount;
 
+    let lastUpdateDate = new Date();
+    lastUpdateDate.setHours(0, 0, 0, 0);
+
+    this.setState({todayBalance, totalBalance, dailyAmount, lastUpdateDate});
+    localStorage.setItem("todayBalance", todayBalance);
+    localStorage.setItem("totalBalance", totalBalance);
+    localStorage.setItem("dailyAmount", dailyAmount);
+    localStorage.setItem("lastUpdateDate", lastUpdateDate);
   };
 
-  withdrawMoney = (amount) => {
-    let previous = parseFloat(this.state.dayBalance);
-    let dayBalance = previous - parseFloat(amount);
-    let actualBalance = parseFloat(this.state.balance) + dayBalance;
-    if (actualBalance < 0) {
+  withdrawBalance = (amount) => {
+    let floatAmount = parseFloat(amount);
+    let todayBalance = this.state.todayBalance - floatAmount;
+    let totalBalance = this.state.totalBalance - floatAmount;
+
+    if (totalBalance < 0) {
       this.setState({
-        modalState: modalStates.OUT,
+        submitType: submitTypes.OUT,
         modalVisible: true,
         modalHeader: "You don't have enough money.",
         modalText: "",
         modalCancellable: false,
-        modalNoable: false,
-        modalYesText: "Close",
-        modalNoText: "",
+        modalHasSecond: false,
+        modalFirstText: "Close",
+        modalSecondText: "",
       });
       return;
     }
-    /* if (previous >= 0 && dayBalance < 0)
-      this.bg.classList = "bg good invisible";
-    else if (previous < 0 && dayBalance >= 0)
-      this.bg.classList = "bg good visible";*/
-    actualBalance = this.roundToTwo(actualBalance);
-    dayBalance = this.roundToTwo(dayBalance);
-    this.setState({ dayBalance, actualBalance });
-    localStorage.setItem("dayBalance", dayBalance);
-    localStorage.setItem("actualBalance", actualBalance);
+    
+    this.setState({todayBalance, totalBalance});
+    localStorage.setItem("todayBalance", todayBalance);
+    localStorage.setItem("totalBalance", totalBalance);
   };
 
-  handleSubmit = (type, amount) => {
+  handleSubmit = (amount) => {
     this.setState({ numPadVisible: false });
-    if (type === 1) {
-      this.withdrawMoney(amount);
+    if (this.state.submitType === submitTypes.OUT) {
+      this.withdrawBalance(amount);
     } else {
       this.setState({
-        modalState: modalStates.ADD,
+        submitType: submitTypes.ADD,
         modalVisible: true,
         modalHeader: "Money added.",
         modalText: "Do you want to add extra income or update monthly balance?",
         modalCancellable: true,
-        modalNoable: true,
-        modalYesText: "Add",
-        modalNoText: "Update",
+        modalHasSecond: true,
+        modalFirstText: "Add",
+        modalSecondText: "Update",
         modalAmount: amount,
       });
     }
   };
 
-  modalOnYes = () => {
+  modalOnFirst = () => {
     this.setState({ modalVisible: false });
-    switch (this.state.modalState) {
-      case modalStates.ADD:
-        this.withdrawMoney(-this.state.modalAmount);
+    switch (this.state.submitType) {
+      case submitTypes.ADD:
+        this.withdrawBalance(-this.state.modalAmount);
         break;
       default:
         break;
     }
   };
 
-  modalOnNo = () => {
+  modalOnSecond = () => {
     this.setState({ modalVisible: false });
-    switch (this.state.modalState) {
-      case modalStates.ADD:
-        this.addMoney(this.state.modalAmount);
+    switch (this.state.submitType) {
+      case submitTypes.ADD:
+        this.updateBalance(this.state.modalAmount);
         break;
       default:
         console.log("error incorrect state modal no");
@@ -174,22 +143,26 @@ class App extends React.Component {
     this.setState({ modalVisible: false });
   };
 
+  closeNumPad = () => {
+    this.setState({ numPadVisible: false });
+  };
+
   longAddPress = () => {
     let amount = window.prompt();
     if (amount === null || amount === "") {
       dontShow = false;
       return;
     }
+
     localStorage.clear();
     let values = amount.split(" ");
-    let actualBalance = parseFloat(values[0]);
-    let dayBalance = parseFloat(values[1]);
-    let daily = parseFloat(values[2]);
-    let balance = actualBalance - dayBalance;
-    localStorage.setItem("balance", balance);
-    localStorage.setItem("dayBalance", dayBalance);
-    localStorage.setItem("daily", daily);
-    localStorage.setItem("actualBalance", actualBalance);
+    let totalBalance = parseFloat(values[0]);
+    let todayBalance = parseFloat(values[1]);
+    let dailyAmount = parseFloat(values[2]);
+
+    localStorage.setItem("totalBalance", totalBalance);
+    localStorage.setItem("todayBalance", todayBalance);
+    localStorage.setItem("dailyAmount", dailyAmount);
     window.location.reload();
   };
 
@@ -200,29 +173,28 @@ class App extends React.Component {
           visible={this.state.modalVisible}
           header={this.state.modalHeader}
           text={this.state.modalText}
-          noable={this.state.modalNoable}
           cancellable={this.state.modalCancellable}
-          yesText={this.state.modalYesText}
-          noText={this.state.modalNoText}
-          onYes={this.modalOnYes}
-          onNo={this.modalOnNo}
+          firstText={this.state.modalFirstText}
+          secondText={this.state.modalSecondText}
+          hasSecond={this.state.modalHasSecond}
+          onFirst={this.modalOnFirst}
+          onSecond={this.modalOnSecond}
           onCancel={this.modalOnCancel}
         />
         <NumPad
           visible={this.state.numPadVisible}
           close={this.closeNumPad}
-          type={this.state.typeSubmit}
           submit={this.handleSubmit}
         />
         <div className="container-app">
           <div className="container-upper">
-            <div className="container-upper-bad" style={this.state.dayBalance < 0 ? {"opacity":"100%"} : {"opacity":"0%"}}>
+            <div className="container-upper-bad" style={this.state.todayBalance < 0 ? {"opacity":"100%"} : {"opacity":"0%"}}>
 
             </div>
             <div className="container-total">
               <Total 
-                total={this.state.actualBalance} 
-                left={this.state.dayBalance}/>
+                total={this.state.totalBalance} 
+                left={this.state.todayBalance}/>
             </div>
             <div className="container-buttons">
               <div
@@ -235,7 +207,7 @@ class App extends React.Component {
                 onTouchEnd={() => {
                   clearTimeout(pressTimer);
                   if (!dontShow) {
-                    this.setState({ typeSubmit: 0, numPadVisible: true });
+                    this.setState({ submitType: submitTypes.ADD, numPadVisible: true });
                   } else {
                     this.longAddPress();
                   }
@@ -254,7 +226,7 @@ class App extends React.Component {
                 onTouchEnd={() => {
                   clearTimeout(pressTimer);
                   if (!dontShow) {
-                    this.setState({ typeSubmit: 1, numPadVisible: true });
+                    this.setState({ submitType: submitTypes.OUT, numPadVisible: true });
                   } else {
                     localStorage.clear();
                     window.location.reload();

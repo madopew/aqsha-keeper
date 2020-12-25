@@ -27,18 +27,18 @@ class Modal extends React.Component {
           <div className="buttons-modal">
             <button
               onClick={() => {
-                this.props.onYes();
+                this.props.onFirst();
               }}
             >
-              {this.props.yesText}
+              {this.props.firstText}
             </button>
             <button
-              className={this.props.noable ? "" : "hidden"}
+              className={this.props.hasSecond ? "" : "hidden"}
               onClick={() => {
-                this.props.onNo();
+                this.props.onSecond();
               }}
             >
-              {this.props.noText}
+              {this.props.secondText}
             </button>
             <button
               className={this.props.cancellable ? "" : "hidden"}

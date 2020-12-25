@@ -8,13 +8,14 @@ class NumPad extends React.Component {
 
   handleClick = (number) => {
     if (number === "back") {
-      if (this.state.amount === 0) this.props.close();
-      else {
+      if (this.state.amount === 0) {
+        this.props.close();
+      } else {
         let amount = this.state.amount / 10;
         this.setState({ amount: amount | 0 });
       }
     } else if (number === "tick") {
-      this.props.submit(this.props.type, this.state.amount / 100.0);
+      this.props.submit(this.state.amount / 100.0);
       this.setState({ amount: 0 });
     } else {
       let amount = this.state.amount * 10 + parseInt(number);
