@@ -3,6 +3,7 @@ import "./App.css";
 import NumPad from "./components/NumPad/NumPad";
 import Modal from "./components/Modal/Modal";
 import Total from "./components/Balance/Balance";
+import Transactions from "./components/Transactions/Transactions"
 
 let pressTimer;
 let dontShow = false;
@@ -14,10 +15,22 @@ const submitTypes = {
 
 class App extends React.Component {
   state = {
-    totalBalance: localStorage.getItem("totalBalance") ? parseFloat(localStorage.getItem("totalBalance")) : 0,
-    todayBalance: localStorage.getItem("todayBalance") ? parseFloat(localStorage.getItem("todayBalance")) : 0,
-    dailyAmount: localStorage.getItem("dailyAmount") ? parseFloat(localStorage.getItem("dailyAmount")) : 0,
-    lastUpdateDate: localStorage.getItem("lastUpdateDate") ? new Date(localStorage.getItem("lastUpdateDate")) : null,
+    totalBalance: localStorage.getItem("totalBalance")
+      ? parseFloat(localStorage.getItem("totalBalance"))
+      : 0,
+    todayBalance: localStorage.getItem("todayBalance")
+      ? parseFloat(localStorage.getItem("todayBalance"))
+      : 0,
+    dailyAmount: localStorage.getItem("dailyAmount")
+      ? parseFloat(localStorage.getItem("dailyAmount"))
+      : 0,
+    lastUpdateDate: localStorage.getItem("lastUpdateDate")
+      ? new Date(localStorage.getItem("lastUpdateDate"))
+      : null,
+
+    transactions: localStorage.getItem("transactions")
+      ? JSON.parse(localStorage.getItem("transactions"))
+      : null,
 
     submitType: submitTypes.ADD,
 
@@ -25,7 +38,8 @@ class App extends React.Component {
 
     modalVisible: null,
     modalHeader: "Header",
-    modalText: "This is some dummy text for modal window. If you see this probably something went wrong.",
+    modalText:
+      "This is some dummy text for modal window. If you see this probably something went wrong.",
     modalCancellable: true,
     modalHasSecond: true,
     modalFirstText: "Yes",
@@ -39,14 +53,15 @@ class App extends React.Component {
 
       let diff = today - this.state.lastUpdateDate;
       diff /= 1000 * 60 * 60 * 24;
-      
+
       if (diff > 0) {
-        let todayBalance = this.state.todayBalance + diff * this.state.dailyAmount;
+        let todayBalance =
+          this.state.todayBalance + diff * this.state.dailyAmount;
         if (todayBalance > this.state.totalBalance) {
           todayBalance = this.state.totalBalance;
         }
 
-        this.setState({todayBalance, lastUpdateDate: today});
+        this.setState({ todayBalance, lastUpdateDate: today });
         localStorage.setItem("todayBalance", todayBalance);
         localStorage.setItem("lastUpdateDate", today);
       }
@@ -66,7 +81,9 @@ class App extends React.Component {
     let lastUpdateDate = new Date();
     lastUpdateDate.setHours(0, 0, 0, 0);
 
-    this.setState({todayBalance, totalBalance, dailyAmount, lastUpdateDate});
+    this.addTransaction(amount, true);
+
+    this.setState({ todayBalance, totalBalance, dailyAmount, lastUpdateDate });
     localStorage.setItem("todayBalance", todayBalance);
     localStorage.setItem("totalBalance", totalBalance);
     localStorage.setItem("dailyAmount", dailyAmount);
@@ -91,11 +108,39 @@ class App extends React.Component {
       });
       return;
     }
-    
-    this.setState({todayBalance, totalBalance});
+
+    this.addTransaction(floatAmount, false);
+
+    this.setState({ todayBalance, totalBalance });
     localStorage.setItem("todayBalance", todayBalance);
     localStorage.setItem("totalBalance", totalBalance);
   };
+
+  addTransaction = (amount, isUpdate) => {
+    let transactions = this.state.transactions;
+    if (!transactions) {
+      transactions = {
+        operations: []
+      };
+    }
+
+    if (transactions.operations.length > 9) {
+      transactions.operations.splice(0, 1);
+    }
+
+    if (isUpdate) {
+      transactions.operations.push({type: "Update", amount, time: new Date()});
+    } else {
+      if (amount > 0) {
+        transactions.operations.push({type: "Withdraw", amount, time: new Date()});
+      } else {
+        transactions.operations.push({type: "Deposit", amount: -amount, time: new Date()});
+      }
+    }
+
+    this.setState({transactions});
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+  }
 
   handleSubmit = (amount) => {
     this.setState({ numPadVisible: false });
@@ -188,13 +233,19 @@ class App extends React.Component {
         />
         <div className="container-app">
           <div className="container-upper">
-            <div className="container-upper-bad" style={this.state.todayBalance < 0 ? {"opacity":"100%"} : {"opacity":"0%"}}>
-
-            </div>
+            <div
+              className="container-upper-bad"
+              style={
+                this.state.todayBalance < 0
+                  ? { opacity: "100%" }
+                  : { opacity: "0%" }
+              }
+            ></div>
             <div className="container-total">
-              <Total 
-                total={this.state.totalBalance} 
-                left={this.state.todayBalance}/>
+              <Total
+                total={this.state.totalBalance}
+                left={this.state.todayBalance}
+              />
             </div>
             <div className="container-buttons">
               <div
@@ -207,7 +258,10 @@ class App extends React.Component {
                 onTouchEnd={() => {
                   clearTimeout(pressTimer);
                   if (!dontShow) {
-                    this.setState({ submitType: submitTypes.ADD, numPadVisible: true });
+                    this.setState({
+                      submitType: submitTypes.ADD,
+                      numPadVisible: true,
+                    });
                   } else {
                     this.longAddPress();
                   }
@@ -226,7 +280,10 @@ class App extends React.Component {
                 onTouchEnd={() => {
                   clearTimeout(pressTimer);
                   if (!dontShow) {
-                    this.setState({ submitType: submitTypes.OUT, numPadVisible: true });
+                    this.setState({
+                      submitType: submitTypes.OUT,
+                      numPadVisible: true,
+                    });
                   } else {
                     localStorage.clear();
                     window.location.reload();
@@ -239,7 +296,15 @@ class App extends React.Component {
             </div>
           </div>
           <div className="container-lower">
-           
+            <div className={this.state.transactions ? "hidden" : "container-notrans"}>
+              <h3>There are no recent transactions.</h3>
+              <i className="material-icons-outlined">monetization_on</i>
+            </div>
+            <div className={this.state.transactions ? "container-trans" : "hidden"}>
+              <Transactions
+                transactions={this.state.transactions}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -248,108 +313,3 @@ class App extends React.Component {
 }
 
 export default App;
-
-/*
-    let data = [[], []];
-    for (let i = 0; i < this.state.amountDays; i++) {
-      data[0].push(days[(dt.getDay() + i) % 7]);
-      let toAdd = this.roundToTwo(
-        parseFloat(this.state.dayBalance) + parseFloat(this.state.daily) * i
-      );
-      toAdd =
-        toAdd <= this.state.actualBalance ? toAdd : this.state.actualBalance;
-      data[1].push(toAdd);
-    }
-*/
-
-/*
-<div className="container-balance">
-            <Total
-              value={this.state.actualBalance}
-              />
-          </div>
-          <div className="container-left bad">
-            <div ref={object => (this.bg = object)} className="bg good"></div>
-            <h4>Today left</h4>
-            <h1>
-              <NumberEasing
-                precision={2}
-                trail={true}
-                value={parseFloat(this.state.dayBalance)}
-                speed={700}
-              />{" "}
-              <span className="sign">BYR</span>
-            </h1>
-            <div className="container-buttons">
-              <div
-                className="divButton"
-                id="first"
-                onTouchStart={() => {
-                  pressTimer = window.setTimeout(() => {
-                    dontShow = true;
-                  }, 5000);
-                }}
-                onTouchEnd={() => {
-                  clearTimeout(pressTimer);
-                  if (!dontShow)
-                    this.setState({ typeSubmit: 0, numPadVisible: true });
-                  else {
-                    let amount = window.prompt();
-                    if (amount === null || amount === "") {
-                      dontShow = false;
-                      return;
-                    }
-                    localStorage.clear();
-                    let moneyDigits = this.state.moneyDigits;
-                    let moneySign = this.state.moneySign;
-                    let values = amount.split(" ");
-                    let actualBalance = parseFloat(values[0]);
-                    let dayBalance = parseFloat(values[1]);
-                    let daily = parseFloat(values[2]);
-                    let balance = actualBalance - dayBalance;
-                    localStorage.setItem("balance", balance);
-                    localStorage.setItem("dayBalance", dayBalance);
-                    localStorage.setItem("daily", daily);
-                    localStorage.setItem("actualBalance", actualBalance);
-                    localStorage.setItem("moneyDigits", moneyDigits);
-                    localStorage.setItem("moneySign", moneySign);
-
-                    window.location.reload();
-                  }
-                }}
-              >
-                Add
-              </div>
-              <div
-                className="divButton"
-                id="second"
-                onTouchStart={() => {
-                  pressTimer = window.setTimeout(() => {
-                    dontShow = true;
-                  }, 5000);
-                }}
-                onTouchEnd={() => {
-                  clearTimeout(pressTimer);
-                  if (!dontShow)
-                    this.setState({ typeSubmit: 1, numPadVisible: true });
-                  else {
-                    localStorage.clear();
-                    window.location.reload();
-                  }
-                }}
-              >
-                Out
-              </div>
-            </div>
-          </div>
-          <div id="containerChart" className="container-chart">
-            <div className="container-chart-chart">
-              <ColumnChart
-                height={this.state.chartHeight}
-                moneyDigits={2}
-                time={700}
-                data={data}
-              />
-            </div>
-          </div>
-*/

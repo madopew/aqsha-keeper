@@ -42,7 +42,7 @@ body {
 
 .container-upper {
   width: 100vw;
-  height: 60vh;
+  height: 50vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -104,155 +104,28 @@ body {
 
 .container-lower {
   width: 100vw;
-  height: 40vh;
+  height: 50vh;
+  overflow-y: auto;
 }
 
-.container-lower h1 {
-  color:white;
-  font-size: 3rem;
-}
-
-/*.container-balance {
-  width: 100vw;
-  height: 30vh;
-}
-
-.container-left {
-  width: 80%;
-  max-width: 80%;
-  color:white;
-  background: #222222;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding: 1rem;
-  border-radius: 15px;
-  position: relative;
-  margin-bottom: 1rem;
-}
-
-.container-left h4 {
-  font-size: 1rem;
-  padding-bottom: 0.1rem;
-  z-index: 10;
-}
-
-.container-left h1 {
-  font-size: 2.2rem;
-  margin-bottom: 1rem;
-  z-index: 10;
-}
-
-.container-left .sign {
-  font-size: 1.3rem;
-}
-
-.container-left .bg {
+.container-notrans {
   width: 100%;
   height: 100%;
-  margin-left: -1rem;
-  margin-top: -1rem;
-  border-radius: 15px;
-  position: absolute;
-}
-
-.container-left .container-buttons {
-  height: 6vh;
-  background: none;
-  width: 100%;
-  z-index: 10;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-  background: black;
-  mix-blend-mode: screen;
-}
-
-.container-left .container-buttons .divButton {
-  outline: none;
-  background: none;
-  border-radius: 100px;
-  border: 1px solid white;
-  font-weight: 600;
-  font-size: 1rem;
-  width: 35vw;
-  margin: 5px;
-  color: white;
-  height: 90%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  transition: 0.1s background;
-}
-
-.container-left .container-buttons #first {
-  color: black;
-  background-color: white;
-  mix-blend-mode: screen;
-  transition: 0.1s opacity;
-}
-
-.container-left .container-buttons #first:active {
-  opacity: 0.7;
-  -webkit-opacity: 0.7;
-}
-
-.container-left .container-buttons #second:active {
-  background: rgba(255,255,255, 0.4);
-}
-
-.invisible {
-  animation: make-invisible 1s linear both;
-}
-
-@keyframes make-invisible {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-.visible {
-  animation: make-visible 1s linear both;
-}
-
-@keyframes make-visible {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-.container-chart {
-  width: 80%;
-  max-width: 80%;
-  color:white;
-  background: #181818;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #777;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
-  border-radius: 15px;
-  margin-bottom: 1rem;
-  height: 40vh;
+  text-align: center;
 }
 
-.container-chart h4 {
-  color: #a1a1a1;
-  font-size: 1rem;
-  padding-bottom: 0.3rem;
+.container-notrans h3 {
+  font-size: 1.5rem;
+  font-weight: 400;
 }
 
-.container-chart-chart {
-  width: 90%;
-  height: 100%;
-}*/
+.container-notrans .material-icons-outlined {
+  margin-top: 0.5rem;
+  font-size: 2.5rem;
+}

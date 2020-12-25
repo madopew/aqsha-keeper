@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "animated-number-react": "0.0.2",
-    "che-react-number-easing": "^0.1.2",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-scripts": "^4.0.1"
