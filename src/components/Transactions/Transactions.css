@@ -1,8 +1,28 @@
 .Transactions {
     width: 100%;
     height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .container-transaction {
     color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+}
+
+.transaction-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.transaction-info .material-icons-outlined {
+    font-size: 2.5rem;
+    padding-right: 1rem;
 }

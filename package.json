@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "che-react-number-easing": "^0.1.4",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
-    "react-scripts": "^4.0.1"
+    "react-scripts": "^4.0.1",
+    "react-transition-group": "^4.4.1"
   },
   "scripts": {
     "start": "react-scripts start",

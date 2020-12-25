@@ -3,7 +3,7 @@ import "./App.css";
 import NumPad from "./components/NumPad/NumPad";
 import Modal from "./components/Modal/Modal";
 import Total from "./components/Balance/Balance";
-import Transactions from "./components/Transactions/Transactions"
+import Transactions from "./components/Transactions/Transactions";
 
 let pressTimer;
 let dontShow = false;
@@ -120,7 +120,7 @@ class App extends React.Component {
     let transactions = this.state.transactions;
     if (!transactions) {
       transactions = {
-        operations: []
+        operations: [],
       };
     }
 
@@ -129,18 +129,30 @@ class App extends React.Component {
     }
 
     if (isUpdate) {
-      transactions.operations.push({type: "Update", amount, time: new Date()});
+      transactions.operations.push({
+        type: "Update",
+        amount,
+        time: new Date(),
+      });
     } else {
       if (amount > 0) {
-        transactions.operations.push({type: "Withdraw", amount, time: new Date()});
+        transactions.operations.push({
+          type: "Withdraw",
+          amount,
+          time: new Date(),
+        });
       } else {
-        transactions.operations.push({type: "Deposit", amount: -amount, time: new Date()});
+        transactions.operations.push({
+          type: "Deposit",
+          amount: -amount,
+          time: new Date(),
+        });
       }
     }
 
-    this.setState({transactions});
+    this.setState({ transactions });
     localStorage.setItem("transactions", JSON.stringify(transactions));
-  }
+  };
 
   handleSubmit = (amount) => {
     this.setState({ numPadVisible: false });
@@ -296,15 +308,24 @@ class App extends React.Component {
             </div>
           </div>
           <div className="container-lower">
-            <div className={this.state.transactions ? "hidden" : "container-notrans"}>
-              <h3>There are no recent transactions.</h3>
-              <i className="material-icons-outlined">monetization_on</i>
-            </div>
-            <div className={this.state.transactions ? "container-trans" : "hidden"}>
-              <Transactions
-                transactions={this.state.transactions}
-              />
-            </div>
+            {this.state.transactions ? (
+              <div
+                className={
+                  this.state.transactions ? "container-trans" : "hidden"
+                }
+              >
+                <Transactions transactions={this.state.transactions} />
+              </div>
+            ) : (
+              <div
+                className={
+                  this.state.transactions ? "hidden" : "container-notrans"
+                }
+              >
+                <h3>There are no recent transactions.</h3>
+                <i className="material-icons-outlined">monetization_on</i>
+              </div>
+            )}
           </div>
         </div>
       </div>
