@@ -1,28 +1,54 @@
 .Transactions {
-    width: 100%;
-    height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container-transactions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .container-transaction {
-    color: white;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 90%;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  border-top: 0.5px solid white;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.container-transaction h1 {
+    font-family: "Exo 2", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 }
 
 .transaction-info {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .transaction-info .material-icons-outlined {
-    font-size: 2.5rem;
-    padding-right: 1rem;
+  font-size: 2.5rem;
+  padding-right: 1rem;
 }
+
+.transaction-item-enter {
+  opacity: 0;
+  transform: scale(0.8);
+}
+.transaction-item-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 200ms ease-in-out;
+  transition: transform 200ms ease-in-out;
+}
+

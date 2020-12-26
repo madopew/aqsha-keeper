@@ -1,13 +1,14 @@
 import React from "react";
 import "./Transactions.css";
 
-import { TransitionGroup } from 'react-transition-group';
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 class Transactions extends React.Component {
   render() {
     let operations = [];
-    for(let i = this.props.transactions.operations.length - 1; i >= 0; i--) {
-      let icon = "";
+    for (let i = this.props.transactions.operations.length - 1; i >= 0 ; i--) {
       switch (this.props.transactions.operations[i].type) {
         case "Update":
           icon = "loop";
@@ -17,32 +18,46 @@ class Transactions extends React.Component {
           break;
         case "Withdraw":
           icon = "remove_circle";
-          break;  
+          break;
         default:
-          break;    
+          break;
       }
 
       let time = new Date(this.props.transactions.operations[i].time);
-      let timeParsed = String(time.getHours()).padStart(2, "0") + ":" + String(time.getMinutes()).padStart(2, "0") + " " + time.getDate() + "." + (time.getMonth() + 1) + "." + time.getFullYear();
+      let timeParsed =
+        time.getDate() +
+        " " +
+        months[time.getMonth()] +
+        ", " +
+        String(time.getHours()).padStart(2, "0") +
+        ":" +
+        String(time.getMinutes()).padStart(2, "0");
 
-      operations.push(
-        <div className="container-transaction" key={i}>
-          <div className="transaction-info">
-            <i className="material-icons-outlined">{icon}</i>
-            <div className="transaction-info-inner">
-              <h1>{this.props.transactions.operations[i].type}</h1>
-              <p>{timeParsed}</p>
+      operations.push({
+        key: this.props.transactions.operations[i].key,
+        element: (
+          <div className="container-transaction">
+            <div className="transaction-info">
+              <h3>{timeParsed}</h3>
             </div>
+            <h1>{this.props.transactions.operations[i].amount}</h1>
           </div>
-          <h1>{this.props.transactions.operations[i].amount}</h1>
-        </div>
-      );
+        ),
+      });
     }
 
     return (
       <div className="Transactions">
-        <TransitionGroup>
-          {operations}
+        <TransitionGroup className="container-transactions">
+          {operations.map((operation) => (
+            <CSSTransition
+              key={operation.key}
+              timeout={200}
+              classNames="transaction-item"
+            >
+              {operation.element}
+            </CSSTransition>
+          ))}
         </TransitionGroup>
       </div>
     );

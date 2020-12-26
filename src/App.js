@@ -4,6 +4,7 @@ import NumPad from "./components/NumPad/NumPad";
 import Modal from "./components/Modal/Modal";
 import Total from "./components/Balance/Balance";
 import Transactions from "./components/Transactions/Transactions";
+import uuid from "react-uuid";
 
 let pressTimer;
 let dontShow = false;
@@ -31,6 +32,7 @@ class App extends React.Component {
     transactions: localStorage.getItem("transactions")
       ? JSON.parse(localStorage.getItem("transactions"))
       : null,
+    maxTransactions: 10,  
 
     submitType: submitTypes.ADD,
 
@@ -109,11 +111,11 @@ class App extends React.Component {
       return;
     }
 
-    this.addTransaction(floatAmount, false);
-
     this.setState({ todayBalance, totalBalance });
     localStorage.setItem("todayBalance", todayBalance);
     localStorage.setItem("totalBalance", totalBalance);
+
+    this.addTransaction(floatAmount, false);
   };
 
   addTransaction = (amount, isUpdate) => {
@@ -124,12 +126,13 @@ class App extends React.Component {
       };
     }
 
-    if (transactions.operations.length > 9) {
+    if (transactions.operations.length + 1 > this.state.maxTransactions) {
       transactions.operations.splice(0, 1);
     }
 
     if (isUpdate) {
       transactions.operations.push({
+        key: uuid(),
         type: "Update",
         amount,
         time: new Date(),
@@ -137,12 +140,14 @@ class App extends React.Component {
     } else {
       if (amount > 0) {
         transactions.operations.push({
+          key: uuid(),
           type: "Withdraw",
           amount,
           time: new Date(),
         });
       } else {
         transactions.operations.push({
+          key: uuid(),
           type: "Deposit",
           amount: -amount,
           time: new Date(),
@@ -314,7 +319,9 @@ class App extends React.Component {
                   this.state.transactions ? "container-trans" : "hidden"
                 }
               >
-                <Transactions transactions={this.state.transactions} />
+                <Transactions 
+                  transactions={this.state.transactions} 
+                  max={this.state.maxTransactions}/>
               </div>
             ) : (
               <div
