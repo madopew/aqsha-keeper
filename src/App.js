@@ -218,13 +218,18 @@ class App extends React.Component {
 
     localStorage.clear();
     let values = amount.split(" ");
+    
     let totalBalance = parseFloat(values[0]);
     let todayBalance = parseFloat(values[1]);
     let dailyAmount = parseFloat(values[2]);
 
+    let lastUpdateDate = new Date();
+    lastUpdateDate.setHours(0, 0, 0, 0);
+
     localStorage.setItem("totalBalance", totalBalance);
     localStorage.setItem("todayBalance", todayBalance);
     localStorage.setItem("dailyAmount", dailyAmount);
+    localStorage.setItem("lastUpdateDate", lastUpdateDate);
     window.location.reload();
   };
 
