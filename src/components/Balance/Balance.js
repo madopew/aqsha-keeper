@@ -6,7 +6,7 @@ class Balance extends React.Component {
   render() {
     return (
       <div className="Balance">
-        <h4>Total balance</h4>
+        <h4>Total Balance</h4>
         <h1>
           <NumberEasing
             precision={2}
@@ -16,7 +16,7 @@ class Balance extends React.Component {
           />{" "}
           <span className="sign">BYR</span>
         </h1>
-        <h4>Today left</h4>
+        <h4>Current Balance</h4>
         <h1>
           <NumberEasing
             precision={2}

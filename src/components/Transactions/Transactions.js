@@ -3,26 +3,25 @@ import "./Transactions.css";
 
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
-const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 class Transactions extends React.Component {
   render() {
     let operations = [];
-    for (let i = this.props.transactions.operations.length - 1; i >= 0 ; i--) {
-      switch (this.props.transactions.operations[i].type) {
-        case "Update":
-          icon = "loop";
-          break;
-        case "Deposit":
-          icon = "add_circle";
-          break;
-        case "Withdraw":
-          icon = "remove_circle";
-          break;
-        default:
-          break;
-      }
-
+    for (let i = this.props.transactions.operations.length - 1; i >= 0; i--) {
       let time = new Date(this.props.transactions.operations[i].time);
       let timeParsed =
         time.getDate() +
@@ -33,6 +32,21 @@ class Transactions extends React.Component {
         ":" +
         String(time.getMinutes()).padStart(2, "0");
 
+      let typeSign = "";
+      let typeClass;
+      switch (this.props.transactions.operations[i].type) {
+        case "Deposit":
+          typeSign = "+";
+          typeClass = "transaction-deposit";
+          break;
+        case "Withdraw":
+          typeSign = "-";
+          typeClass = "transaction-withdraw";
+          break;
+        default:
+          break;
+      }
+
       operations.push({
         key: this.props.transactions.operations[i].key,
         element: (
@@ -40,7 +54,7 @@ class Transactions extends React.Component {
             <div className="transaction-info">
               <h3>{timeParsed}</h3>
             </div>
-            <h1>{this.props.transactions.operations[i].amount}</h1>
+            <h1 className={typeClass}>{typeSign}{this.props.transactions.operations[i].amount}</h1>
           </div>
         ),
       });

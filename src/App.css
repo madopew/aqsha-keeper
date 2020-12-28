@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Exo+2&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800;900&display=swap');
 * {
   margin: 0;
   padding: 0;
@@ -42,13 +42,16 @@ body {
 
 .container-upper {
   width: 100vw;
-  height: 50vh;
+  height: 40vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  align-items: center;
   background-image: url("./res/good.jpg");
   background-size: cover;
   position: relative;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
 }
 
 .container-upper-bad {
@@ -56,6 +59,8 @@ body {
   width: 100%;
   height: 100%;
   background-image: url("./res/bad.jpeg");
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
   background-size: cover;
   z-index: 1;
   opacity: 0%;
@@ -71,26 +76,38 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  width: 90vw;
+  height: 6vh;
+  transform: translateY(50%);
+  backdrop-filter: blur(40px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-buttons .divider {
+  background: #bbb;
+  width: 0.5vw;
+  border-radius: 0.25vw;
+  height: 60%;
 }
 
 .div-button {
   font-size: 1.2rem;
   font-weight: 500;
-  width: 42vw;
-  padding-top: 0.7rem;
-  padding-bottom: 0.7rem;
   text-align: center;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
   color: #131313;
-  border-radius: 10px;
-  margin-top: 1rem;
-  transform: translateY(50%);
   display: flex;
   justify-content: center;
   transition: color 0.2s ease-in-out;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .div-button .material-icons {
@@ -104,7 +121,7 @@ body {
 
 .container-lower {
   width: 100vw;
-  height: 50vh;
+  height: 60vh;
   overflow-y: auto;
 }
 
@@ -131,6 +148,6 @@ body {
 }
 
 .container-trans {
-  padding-top: 2rem;
+  padding-top: 3rem;
   padding-bottom: 1.5rem;
 }

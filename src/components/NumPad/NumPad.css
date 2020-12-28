@@ -5,6 +5,7 @@
   height: 100vh;
   width: 100vw;
   background: #000000;
+  border-radius: 45px;
 }
 
 .visible-numpad {
@@ -16,7 +17,7 @@
     transform: translateY(1000px);
   }
   100% {
-    transform: translateY(0);
+    transform: translateY(10%);
   }
 }
 
@@ -26,7 +27,7 @@
 
 @keyframes slide-out-bottom {
   0% {
-    transform: translateY(0);
+    transform: translateY(10%);
   }
   100% {
     transform: translateY(1000px);
@@ -34,7 +35,7 @@
 }
 
 .container-numpad {
-  height: 98vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;

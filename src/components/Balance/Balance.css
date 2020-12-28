@@ -11,17 +11,21 @@
 .Balance h4 {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   color: #fff;
-  font-size: 1.1rem;
+  font-size: 1rem;
   margin-top: 2rem;
   padding-bottom: 0.3rem;
 }
 
-.Balance h1 {
+.Balance .react-number-easing {
   font-family: "Exo 2", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  "Helvetica Neue", Arial, sans-serif;
   font-size: 2.5rem;
+  font-weight: 600;
 }
 
 .Balance .sign {
+  font-family: "Exo 2", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  "Helvetica Neue", Arial, sans-serif;
   font-size: 1.3rem;
+  font-weight: 600;
 }

@@ -287,6 +287,7 @@ class App extends React.Component {
                 <i className="material-icons">add_circle</i>
                 Add
               </div>
+              <div className="divider"></div>
               <div
                 className="div-button"
                 onTouchStart={() => {
