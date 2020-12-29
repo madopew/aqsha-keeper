@@ -48,7 +48,7 @@ class App extends React.Component {
     modalSecondText: "No",
   };
 
-  componentDidMount() {
+  checkUpdateDate = () => {
     if (this.state.lastUpdateDate !== null) {
       let today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -66,8 +66,24 @@ class App extends React.Component {
         this.setState({ todayBalance, lastUpdateDate: today });
         localStorage.setItem("todayBalance", todayBalance);
         localStorage.setItem("lastUpdateDate", today);
+        console.log("balance updated");
+      } else {
+        console.log("no update required");
       }
     }
+  }
+
+  setupFocusListener = () => {
+    document.addEventListener("visibilitychange", event => {
+      if (document.visibilityState === "visible") {
+        this.checkUpdateDate();
+      }
+    })
+  }
+
+  componentDidMount() {
+    this.setupFocusListener();
+    this.checkUpdateDate();
   }
 
   daysInMonth = () => {
