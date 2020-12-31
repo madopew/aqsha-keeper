@@ -21,43 +21,45 @@ const months = [
 class Transactions extends React.Component {
   render() {
     let operations = [];
-    for (let i = this.props.transactions.operations.length - 1; i >= 0; i--) {
-      let time = new Date(this.props.transactions.operations[i].time);
-      let timeParsed =
-        time.getDate() +
-        " " +
-        months[time.getMonth()] +
-        ", " +
-        String(time.getHours()).padStart(2, "0") +
-        ":" +
-        String(time.getMinutes()).padStart(2, "0");
+    if(this.props.transactions) {
+      for (let i = this.props.transactions.operations.length - 1; i >= 0; i--) {
+        let time = new Date(this.props.transactions.operations[i].time);
+        let timeParsed =
+          time.getDate() +
+          " " +
+          months[time.getMonth()] +
+          ", " +
+          String(time.getHours()).padStart(2, "0") +
+          ":" +
+          String(time.getMinutes()).padStart(2, "0");
 
-      let typeSign = "";
-      let typeClass;
-      switch (this.props.transactions.operations[i].type) {
-        case "Deposit":
-          typeSign = "+";
-          typeClass = "transaction-deposit";
-          break;
-        case "Withdraw":
-          typeSign = "-";
-          typeClass = "transaction-withdraw";
-          break;
-        default:
-          break;
-      }
+        let typeSign = "";
+        let typeClass;
+        switch (this.props.transactions.operations[i].type) {
+          case "Deposit":
+            typeSign = "+";
+            typeClass = "transaction-deposit";
+            break;
+          case "Withdraw":
+            typeSign = "-";
+            typeClass = "transaction-withdraw";
+            break;
+          default:
+            break;
+        }
 
-      operations.push({
-        key: this.props.transactions.operations[i].key,
-        element: (
-          <div className="container-transaction">
-            <div className="transaction-info">
-              <h3>{timeParsed}</h3>
+        operations.push({
+          key: this.props.transactions.operations[i].key,
+          element: (
+            <div className="container-transaction">
+              <div className="transaction-info">
+                <h3>{timeParsed}</h3>
+              </div>
+              <h1 className={typeClass}>{typeSign}{this.props.transactions.operations[i].amount}</h1>
             </div>
-            <h1 className={typeClass}>{typeSign}{this.props.transactions.operations[i].amount}</h1>
-          </div>
-        ),
-      });
+          ),
+        });
+      }
     }
 
     return (
@@ -73,6 +75,10 @@ class Transactions extends React.Component {
             </CSSTransition>
           ))}
         </TransitionGroup>
+        <div className={this.props.transactions ? "hidden" : "container-notrans"}>
+          <h3>There are no recent transactions.</h3>
+          <i className="material-icons-outlined">monetization_on</i>
+        </div>
       </div>
     );
   }

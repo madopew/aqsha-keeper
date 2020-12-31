@@ -32,7 +32,8 @@ class App extends React.Component {
     transactions: localStorage.getItem("transactions")
       ? JSON.parse(localStorage.getItem("transactions"))
       : null,
-    maxTransactions: 10,  
+
+    /* -------- */
 
     submitType: submitTypes.ADD,
 
@@ -112,8 +113,9 @@ class App extends React.Component {
     let floatAmount = parseFloat(amount);
     let todayBalance = this.state.todayBalance - floatAmount;
     let totalBalance = this.state.totalBalance - floatAmount;
+    let eps = 0.001;
 
-    if (totalBalance < 0) {
+    if (totalBalance < -eps) {
       this.setState({
         submitType: submitTypes.OUT,
         modalVisible: true,
@@ -125,6 +127,14 @@ class App extends React.Component {
         modalSecondText: "",
       });
       return;
+    } 
+    
+    if (Math.abs(totalBalance) < eps) {
+      totalBalance = 0; 
+    }
+
+    if (Math.abs(todayBalance) < eps) {
+      todayBalance = 0;
     }
 
     this.setState({ todayBalance, totalBalance });
@@ -142,31 +152,44 @@ class App extends React.Component {
       };
     }
 
-    if (transactions.operations.length + 1 > this.state.maxTransactions) {
+    if (transactions.operations.length + 1 > 10) {
       transactions.operations.splice(0, 1);
     }
 
+    let key = uuid();
+    let time = new Date();
+    let prevState = 
+    {
+      totalBalance: this.state.totalBalance,
+      todayBalance: this.state.todayBalance,
+      dailyAmount: this.state.dailyAmount,
+      lastUpdateDate: this.state.lastUpdateDate
+    };
+
     if (isUpdate) {
       transactions.operations.push({
-        key: uuid(),
+        key,
         type: "Update",
         amount,
-        time: new Date(),
+        time,
+        prevState
       });
     } else {
       if (amount > 0) {
         transactions.operations.push({
-          key: uuid(),
+          key,
           type: "Withdraw",
           amount,
-          time: new Date(),
+          time,
+          prevState
         });
       } else {
         transactions.operations.push({
-          key: uuid(),
+          key,
           type: "Deposit",
           amount: -amount,
-          time: new Date(),
+          time,
+          prevState
         });
       }
     }
@@ -247,6 +270,14 @@ class App extends React.Component {
     localStorage.setItem("dailyAmount", dailyAmount);
     localStorage.setItem("lastUpdateDate", lastUpdateDate);
     window.location.reload();
+  };
+
+  cancelLastTransaction = () => {
+    if (this.state.transactions) {
+      let newTransactions = JSON.parse(JSON.stringify(this.state.transactions));
+      newTransactions.operations.pop();
+      this.setState({transactions: newTransactions});
+    }
   };
 
   render() {
@@ -335,26 +366,10 @@ class App extends React.Component {
             </div>
           </div>
           <div className="container-lower">
-            {this.state.transactions ? (
-              <div
-                className={
-                  this.state.transactions ? "container-trans" : "hidden"
-                }
-              >
-                <Transactions 
-                  transactions={this.state.transactions} 
-                  max={this.state.maxTransactions}/>
-              </div>
-            ) : (
-              <div
-                className={
-                  this.state.transactions ? "hidden" : "container-notrans"
-                }
-              >
-                <h3>There are no recent transactions.</h3>
-                <i className="material-icons-outlined">monetization_on</i>
-              </div>
-            )}
+            <Transactions 
+              transactions={this.state.transactions} 
+              max={this.state.maxTransactions}
+              cancel={this.cancelLastTransaction}/>
           </div>
         </div>
       </div>
