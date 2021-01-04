@@ -274,9 +274,26 @@ class App extends React.Component {
 
   cancelLastTransaction = () => {
     if (this.state.transactions) {
-      let newTransactions = JSON.parse(JSON.stringify(this.state.transactions));
-      newTransactions.operations.pop();
-      this.setState({transactions: newTransactions});
+      let transactions = JSON.parse(JSON.stringify(this.state.transactions));
+      let last = transactions.operations.pop();
+      let dailyAmount = last.prevState.dailyAmount;
+      let lastUpdateDate = last.prevState.lastUpdateDate;
+      let todayBalance = last.prevState.todayBalance;
+      let totalBalance = last.prevState.totalBalance;
+      
+      this.setState({ 
+        dailyAmount, 
+        lastUpdateDate,
+        todayBalance,
+        totalBalance,
+        transactions
+      });
+
+      localStorage.setItem("dailyAmount", dailyAmount);
+      localStorage.setItem("lastUpdateDate", lastUpdateDate);
+      localStorage.setItem("todayBalance", todayBalance);
+      localStorage.setItem("totalBalance", totalBalance);
+      localStorage.setItem("transactions", JSON.stringify(transactions));
     }
   };
 

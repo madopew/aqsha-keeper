@@ -1,5 +1,6 @@
 import React from "react";
 import "./Transactions.css";
+import SwipeToDelete from  "../SwipeToDelete/SwipeToDelete"
 
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
@@ -19,6 +20,10 @@ const months = [
 ];
 
 class Transactions extends React.Component {
+  onDelete = () => {
+    this.props.cancel();
+  }
+
   render() {
     let operations = [];
     if(this.props.transactions) {
@@ -51,12 +56,21 @@ class Transactions extends React.Component {
         operations.push({
           key: this.props.transactions.operations[i].key,
           element: (
-            <div className="container-transaction">
-              <div className="transaction-info">
-                <h3>{timeParsed}</h3>
+            <SwipeToDelete
+              style={{
+                width: "90vw",
+                height: "7vh",
+                marginBottom: "1rem",
+              }}
+              handleDelete={this.onDelete}
+            >
+              <div className="container-transaction">
+                <div className="transaction-info">
+                  <h3>{timeParsed}</h3>
+                </div>
+                <h1 className={typeClass}>{typeSign}{this.props.transactions.operations[i].amount}</h1>
               </div>
-              <h1 className={typeClass}>{typeSign}{this.props.transactions.operations[i].amount}</h1>
-            </div>
+            </SwipeToDelete>
           ),
         });
       }

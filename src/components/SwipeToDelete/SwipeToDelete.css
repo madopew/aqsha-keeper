@@ -1,0 +1,12 @@
+.SwipeToDelete {
+    background-color: #ff453a;
+    color: white;
+    overflow: hidden;
+}
+
+.swipe-to-delete-content {
+    min-width: 100%;
+    width: 100%;
+    height: 100%;
+    transition: none;
+}
